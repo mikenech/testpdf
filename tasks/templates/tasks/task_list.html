@@ -1,0 +1,11 @@
+{% extends 'tasks/index.html' %}
+
+{% block title %} Список заданий {% endblock title %}
+{% block content %}
+<h1>Задания по всем категориям</h1>
+<div class="column-x">
+    {% for task in task_list %}
+        {% include 'tasks/includes/card_group.html' %}
+    {% endfor %}
+</div>
+{% endblock content %}

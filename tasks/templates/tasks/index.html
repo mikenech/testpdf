@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+    {% include 'tasks/includes/math_styles.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>
+        {% block title %}
+            Home
+        {% endblock title %}
+    </title>
+</head>
+<body class=" min-vh-100 d-flex flex-column justify-content-between" style="background: url({% static '/tasks/img/cell-mm.jpg' %}); background-size: 800px;">
+    <header class="fixed-top">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'task_list_url' %}">Тесты в PDF</a>
+  <!--  <a class="navbar-brand" href="{% url 'variant_detail_url' 1 %}">Вариант в PDF</a> -->
+    <a class="navbar-brand" href="{% url 'admin:index' %}">Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Категории заданий
+          </a>
+          <ul class="dropdown-menu">
+              {% for category in categories %}
+            <li><a class="dropdown-item" href="{{ category.get_absolute_url }}" target="_blank" rel="noopener noreferrer"> {{ category.name }} </a></li>
+              {% endfor %}
+          </ul>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Варианты заданий
+          </a>
+          <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'variant_list_url' %}"><strong>Все варианты</strong></a></li>
+              <li><hr class="dropdown-divider"></li>
+              {% for variant in variants %}
+            <li><a class="dropdown-item" href="{{ variant.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ variant.variant_id }} - {{ variant.name }} </a></li>
+              {% endfor %}
+          </ul>
+        </li>
+      </ul>
+      <form class="d-flex" role="search" method="GET" action="">
+        <input class="form-control me-2" type="search" name="seаrch" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Поиск</button>
+      </form>
+    </div>
+  </div>
+</nav>
+    </header>
+    <main class="container mt-5 pt-4">
+        {% block content %}
+         No content
+        {% endblock content %}
+    </main>
+    <footer class="bg-dark text-info d-flex justify-content-center align-items-center">
+        <span>
+            <li class="d-flex justify-content-center"> © 2025 Федеральная служба по надзору в сфере образования и науки </li>
+            <li class="d-flex justify-content-center">Копирование не допускается </li>
+        </span>
+    </footer>
+</bodyclass>
+</html>

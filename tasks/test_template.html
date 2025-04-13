@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load custom_filters %}
+<html>
+<head>
+    <title>Template Tag Test</title>
+</head>
+<body>
+    <h1>Testing custom_filters</h1>
+    
+    {% with my_dict={"key1": "value1", "key2": "value2"} %}
+        <p>Using get_item filter: {{ my_dict|get_item:"key1" }}</p>
+    {% endwith %}
+    
+    {% with my_list="ABCDE" %}
+        <p>Using get_item filter with list: {{ my_list|get_item:1 }}</p>
+    {% endwith %}
+</body>
+</html> 

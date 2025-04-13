@@ -1,0 +1,60 @@
+{% extends 'tasks/index.html' %}
+
+{% block title %} {{category.name}} {% endblock title %}
+
+{% block content %}
+<!-- Модальное окно -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Создание нового варианта теста</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'variant_new_url' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="category_id" class="form-label">Категория варианта: {{category.name}}</label>
+                <input type="text" class="form-control" name="category_id" id="category_id" required value="{{category.id}}">
+            </div>
+
+            <div class="mb-3">
+                <label for="variant_id" class="form-label">Номер варианта</label>
+                <input type="text" class="form-control" name="variant_id" value="{{ new_variant_num }}"  id="variant_id">
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Название варианта</label>
+                <input type="text" class="form-control" name="name" id="name"  required>
+            </div>
+            <div class="mb-3">
+                <label for="tasks_num" class="form-label">Макс. заданий</label>
+                <input type="text" class="form-control" name="tasks_num" id="tasks_num" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="generate_pdf" id="generate_pdf" value="true" checked>
+                <label class="form-check-label" for="generate_pdf">Сразу скачать как PDF</label>
+            </div>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% if category.tasks.all|length == 0 %}
+    <h1>Задания категории "{{category.name}}" на данный момент отсутствуют</h1>
+{% else %}
+    <h1>Задания категории "{{category.name}}"
+        <!-- Кнопка-триггер модального окна -->
+        <button type="button" class="btn btn-primary" style="margin-left: 100px;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Создать вариант теста
+        </button>
+    </h1>
+    <div class="column-x">
+        {% for task in category.tasks.all %}
+            {% include 'tasks/includes/card_group.html' %}
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock content %}

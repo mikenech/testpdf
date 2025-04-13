@@ -1,0 +1,234 @@
+/* Global Math Formula Styles */
+
+/* Fraction formatting */
+.frac {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    letter-spacing: 0.001em;
+    text-align: center;
+    font-size: 14px;
+}
+.frac > span {
+    display: block;
+    padding: 0.1em;
+}
+.frac span.bottom {
+    border-top: thin solid black;
+}
+.frac span.symbol {
+    display: none;
+}
+
+/* Square root formatting */
+.sqrt {
+    display: inline-block;
+    position: relative;
+    padding-left: 0.6em;
+    padding-right: 0.2em;
+    vertical-align: middle;
+}
+.sqrt::before {
+    content: "√";
+    position: absolute;
+    top: -0.1em;
+    left: -0.2em;
+    font-size: 1.2em;
+}
+.sqrt::after {
+    content: "";
+    position: absolute;
+    top: 0.1em;
+    left: 0;
+    right: 0;
+    border-top: thin solid black;
+}
+
+/* Sum symbol formatting */
+.sum {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+.sum .limits {
+    display: block;
+    font-size: 0.6em;
+    text-align: center;
+}
+.sum .limits.upper {
+    position: absolute;
+    top: -0.5em;
+    right: 0;
+    left: 0;
+}
+.sum .limits.lower {
+    position: absolute;
+    bottom: -0.5em;
+    right: 0;
+    left: 0;
+}
+.sum .symbol {
+    font-size: 1.5em;
+    margin: 0 0.1em;
+}
+
+/* Integral symbol formatting */
+.integral {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+.integral .limits {
+    display: block;
+    font-size: 0.6em;
+    text-align: center;
+}
+.integral .limits.upper {
+    position: absolute;
+    top: -0.5em;
+    right: 0;
+    left: 0;
+}
+.integral .limits.lower {
+    position: absolute;
+    bottom: -0.5em;
+    right: 0;
+    left: 0;
+}
+.integral .symbol {
+    font-size: 1.5em;
+    margin: 0 0.1em;
+}
+
+/* Subscript and superscript */
+.sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+.sup {
+    vertical-align: super;
+    font-size: smaller;
+}
+
+/* General math expression container */
+.math {
+    font-family: 'Times New Roman', Times, serif;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Vectors with arrow above */
+.vector {
+    position: relative;
+}
+.vector::before {
+    content: "→";
+    position: absolute;
+    top: -0.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+}
+
+/* Matrix formatting */
+.matrix {
+    display: inline-table;
+    vertical-align: middle;
+    border-collapse: collapse;
+}
+.matrix .row {
+    display: table-row;
+}
+.matrix .cell {
+    display: table-cell;
+    padding: 0.2em 0.5em;
+    text-align: center;
+}
+.matrix::before, .matrix::after {
+    content: "";
+    display: table-cell;
+    width: 0.5em;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+.matrix .row:first-child .cell {
+    border-top: 1px solid black;
+}
+.matrix .row:last-child .cell {
+    border-bottom: 1px solid black;
+}
+
+/* Глобальные стили для математических формул */
+span.latex, span.math, .katex, .katex-display {
+    font-family: 'STIXGeneral', 'DejaVu Serif', serif;
+}
+
+.latex-display {
+    display: block;
+    text-align: center;
+    margin: 15px auto;
+    font-size: 120%;
+    font-family: 'STIXGeneral', 'DejaVu Serif', serif;
+}
+
+.fraction {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+.fraction .num {
+    display: block;
+    border-bottom: 1px solid;
+    padding: 0 3px;
+    margin-bottom: 1px;
+}
+.fraction .den {
+    display: block;
+    padding: 0 3px;
+}
+
+.sum .symbol {
+    font-size: 150%;
+    vertical-align: middle;
+}
+
+.integral .symbol {
+    font-size: 170%;
+    font-family: 'Times New Roman', serif;
+    vertical-align: middle;
+    line-height: 0.8;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.lim {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Стили для систем уравнений */
+.cases {
+    display: inline-table;
+    vertical-align: middle;
+    position: relative;
+    margin-left: 1em;
+}
+.cases:before {
+    content: "{";
+    font-size: 2em;
+    position: absolute;
+    left: -0.5em;
+    top: 0;
+    bottom: 0;
+    line-height: 1.2;
+}
+.cases tr {
+    border: none;
+}
+.cases td {
+    border: none;
+    padding: 0.1em 0.5em;
+    text-align: left;
+} 

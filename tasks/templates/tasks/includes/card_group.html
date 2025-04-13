@@ -1,0 +1,43 @@
+
+            <div class="task-container" style="background: url('.static/tasks/img/cell-mm.jpg') no-repeat center center">
+                <div class="task">
+                    <h5 class="task-title"><a href="{{ task.get_absolute_url }}">{{task.id}}</a>. {{task.title}}</h5>
+                    <div class="task-description "> {{task.description}}
+                        <table class="task-answers">
+                            {% if task.answers.all|length > 0 %}
+                            <tbody>
+                                <tr><th>{{ task.head_answers.questions }}</th><th style="width: 40px;">&nbsp</th> <th>{{ task.head_answers.answers }}</th></tr>
+
+                                {% for answer in task.answers.all %}
+                                <tr>
+                                    <td> {{ 'ABCDEFG'|slice:forloop.counter|last }} ) {{answer.question}}</td><th  style="width: 40px;">&nbsp</th>
+                                    <td> {{forloop.counter}} ) {{answer.answer_key}}   <hr> {{forloop.counter}}.а ) {{answer.alternative_answers}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            {% endif %}
+                        </table>
+                        <div class="task-info">
+                            Сложность:{{task.difficulty_level}}
+                            Макс.баллов:{{task.max_score}}
+                        </div>
+                    </div>
+                    <div class="answer-space">
+                        {% if task.answers.all|length > 0 %}
+                            <table class="task-answers">
+                            <tr><th style="padding-top: 10px;" rowspan=2>Ответ: &nbsp</th>
+                                {% for ans in  task.answers.all %}
+                                <td style="width: 20px; border: 1px solid #000; text-align: center;">{{'ABCDEFG'|slice:forloop.counter|last}}</td> {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for ans in  task.answers.all %}
+                                <td style="width: 20px; border: 1px solid #000">&nbsp</td> {% endfor %}
+                            </tr>
+                            </table>
+                        {% else %}
+                            Ответ: _______________________
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+

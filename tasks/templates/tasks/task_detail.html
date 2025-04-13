@@ -1,0 +1,516 @@
+{% load static %}
+{% load custom_filters %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'tasks/css/math-formulas.css' %}">
+{% include 'tasks/includes/math_styles.html' %}
+<!-- Add MathLive library for LaTeX editing -->
+<link rel="stylesheet" href="https://unpkg.com/mathlive@0.95.5/dist/mathlive.css">
+<script src="https://unpkg.com/mathlive@0.95.5/dist/mathlive.min.js"></script>
+<style>
+    .task-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 5px;
+    }
+    
+    .task-title {
+        color: #333;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .task-metadata {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+    
+    .answer-section {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .answer-title {
+        color: #444;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .answer-content {
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+    }
+    
+    .solution-steps {
+        margin-top: 20px;
+    }
+    
+    .step {
+        margin-bottom: 10px;
+        padding-left: 20px;
+        border-left: 3px solid #4CAF50;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #2196F3;
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    
+    /* Стили для редактирования */
+    .edit-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.8em;
+        margin-left: 10px;
+    }
+    
+    .edit-button:hover {
+        background-color: #45a049;
+    }
+    
+    .edit-form {
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .edit-form textarea, .edit-form input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .edit-form textarea {
+        min-height: 100px;
+    }
+    
+    .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .save-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    
+    .cancel-button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .flash-message {
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        color: white;
+        background-color: #4CAF50;
+        display: none;
+    }
+    
+    /* Стили для интерактивного редактора LaTeX */
+    .latex-editor-container {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    
+    .latex-toolbar {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .latex-toolbar button {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+        padding: 5px 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 36px;
+    }
+    
+    .latex-toolbar button img {
+        max-width: 100%;
+        max-height: 24px;
+    }
+    
+    .latex-toolbar button:hover {
+        background-color: #e9e9e9;
+    }
+    
+    .latex-toolbar .toolbar-group {
+        display: flex;
+        gap: 5px;
+        margin-right: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .editor-panel {
+        display: flex;
+        flex-direction: column;
+        min-height: 300px;
+    }
+    
+    .editor-panel .raw-editor {
+        flex: 1;
+        font-family: monospace;
+        padding: 10px;
+    }
+    
+    .live-preview {
+        background-color: #f9f9f9;
+        border-top: 1px solid #ddd;
+        padding: 15px;
+        min-height: 100px;
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+    
+    .math-field {
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 16px;
+        min-height: 40px;
+        border-radius: 4px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="task-container">
+    <div id="flash-message" class="flash-message"></div>
+    
+    <div class="section-header">
+        <h1 class="task-title" id="title-display">{{ task.title }}</h1>
+        <button class="edit-button" onclick="toggleEdit('title')">Редактировать</button>
+    </div>
+    
+    <div id="title-edit" class="edit-form">
+        <input type="text" id="title-input" value="{{ task.title }}">
+        <div class="form-buttons">
+            <button class="cancel-button" onclick="toggleEdit('title')">Отмена</button>
+            <button class="save-button" onclick="saveEdit('title', {{ task.id }})">Сохранить</button>
+        </div>
+    </div>
+    
+    <div class="task-metadata">
+        <p>Сложность: <span id="difficulty-display">{{ task.difficulty }}</span>
+            <button class="edit-button" onclick="toggleEdit('difficulty')">Редактировать</button>
+        </p>
+        <div id="difficulty-edit" class="edit-form">
+            <select id="difficulty-input">
+                <option value="Лёгкий" {% if task.difficulty == "Лёгкий" %}selected{% endif %}>Лёгкий</option>
+                <option value="Средний" {% if task.difficulty == "Средний" %}selected{% endif %}>Средний</option>
+                <option value="Сложный" {% if task.difficulty == "Сложный" %}selected{% endif %}>Сложный</option>
+            </select>
+            <div class="form-buttons">
+                <button class="cancel-button" onclick="toggleEdit('difficulty')">Отмена</button>
+                <button class="save-button" onclick="saveEdit('difficulty', {{ task.id }})">Сохранить</button>
+            </div>
+        </div>
+        <p>Категория: {{ task.category }}</p>
+        <p>Добавлено: {{ task.created_at|date:"d.m.Y" }}</p>
+    </div>
+    
+    <div class="section-header">
+        <h2>Описание задачи:</h2>
+        <button class="edit-button" onclick="toggleEdit('description')">Редактировать</button>
+    </div>
+    
+    <div class="task-description" id="description-display">
+        {{ task.description|mathjax_safe }}
+    </div>
+    
+    <div id="description-edit" class="edit-form">
+        <div class="latex-editor-container">
+            <div class="latex-toolbar">
+                <div class="toolbar-group">
+                    <button type="button" onclick="insertLatex('\\frac{a}{b}', 'description')" title="Дробь"><img src="{% static 'tasks/img/latex/frac.png' %}" alt="Дробь"></button>
+                    <button type="button" onclick="insertLatex('\\sqrt{x}', 'description')" title="Корень"><img src="{% static 'tasks/img/latex/sqrt.png' %}" alt="Корень"></button>
+                    <button type="button" onclick="insertLatex('x^{n}', 'description')" title="Степень"><img src="{% static 'tasks/img/latex/power.png' %}" alt="Степень"></button>
+                    <button type="button" onclick="insertLatex('x_{i}', 'description')" title="Индекс"><img src="{% static 'tasks/img/latex/index.png' %}" alt="Индекс"></button>
+                </div>
+                <div class="toolbar-group">
+                    <button type="button" onclick="insertLatex('\\sum_{i=1}^{n}', 'description')" title="Сумма"><img src="{% static 'tasks/img/latex/sum.png' %}" alt="Сумма"></button>
+                    <button type="button" onclick="insertLatex('\\int_{a}^{b}', 'description')" title="Интеграл"><img src="{% static 'tasks/img/latex/integral.png' %}" alt="Интеграл"></button>
+                    <button type="button" onclick="insertLatex('\\prod_{i=1}^{n}', 'description')" title="Произведение"><img src="{% static 'tasks/img/latex/prod.png' %}" alt="Произведение"></button>
+                    <button type="button" onclick="insertLatex('\\lim_{x \\to a}', 'description')" title="Предел"><img src="{% static 'tasks/img/latex/limit.png' %}" alt="Предел"></button>
+                </div>
+                <div class="toolbar-group">
+                    <button type="button" onclick="insertLatex('\\alpha', 'description')" title="Alpha"><img src="{% static 'tasks/img/latex/alpha.png' %}" alt="Alpha"></button>
+                    <button type="button" onclick="insertLatex('\\beta', 'description')" title="Beta"><img src="{% static 'tasks/img/latex/beta.png' %}" alt="Beta"></button>
+                    <button type="button" onclick="insertLatex('\\gamma', 'description')" title="Gamma"><img src="{% static 'tasks/img/latex/gamma.png' %}" alt="Gamma"></button>
+                    <button type="button" onclick="insertLatex('\\delta', 'description')" title="Delta"><img src="{% static 'tasks/img/latex/delta.png' %}" alt="Delta"></button>
+                    <button type="button" onclick="insertLatex('\\pi', 'description')" title="Pi"><img src="{% static 'tasks/img/latex/pi.png' %}" alt="Pi"></button>
+                </div>
+                <div class="toolbar-group">
+                    <button type="button" onclick="insertLatex('\\begin{cases} a & \\text{if } x > 0 \\\\ b & \\text{if } x \\leq 0 \\end{cases}', 'description')" title="Условие"><img src="{% static 'tasks/img/latex/cases.png' %}" alt="Условие"></button>
+                    <button type="button" onclick="insertLatex('\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}', 'description')" title="Матрица"><img src="{% static 'tasks/img/latex/matrix.png' %}" alt="Матрица"></button>
+                </div>
+                <div class="toolbar-group">
+                    <button type="button" onclick="insertLatex('\\mathbb{R}', 'description')" title="R"><img src="{% static 'tasks/img/latex/real.png' %}" alt="R"></button>
+                    <button type="button" onclick="insertLatex('\\mathbb{Z}', 'description')" title="Z"><img src="{% static 'tasks/img/latex/integer.png' %}" alt="Z"></button>
+                    <button type="button" onclick="insertLatex('\\mathbb{N}', 'description')" title="N"><img src="{% static 'tasks/img/latex/natural.png' %}" alt="N"></button>
+                </div>
+            </div>
+            <div class="editor-panel">
+                <textarea id="description-input" class="raw-editor" oninput="updatePreview('description')">{{ task.description }}</textarea>
+                <div class="live-preview" id="description-preview"></div>
+            </div>
+        </div>
+        <div class="form-buttons">
+            <button class="cancel-button" onclick="toggleEdit('description')">Отмена</button>
+            <button class="save-button" onclick="saveEdit('description', {{ task.id }})">Сохранить</button>
+        </div>
+    </div>
+    
+    <div class="answer-section">
+        <div class="section-header">
+            <h2 class="answer-title">Ответ:</h2>
+            <button class="edit-button" onclick="toggleEdit('answer')">Редактировать</button>
+        </div>
+        
+        <div class="answer-content" id="answer-display">
+            {{ task.answer|mathjax_safe }}
+        </div>
+        
+        <div id="answer-edit" class="edit-form">
+            <div class="latex-editor-container">
+                <div class="latex-toolbar">
+                    <div class="toolbar-group">
+                        <button type="button" onclick="insertLatex('\\frac{a}{b}', 'answer')" title="Дробь"><img src="{% static 'tasks/img/latex/frac.png' %}" alt="Дробь"></button>
+                        <button type="button" onclick="insertLatex('\\sqrt{x}', 'answer')" title="Корень"><img src="{% static 'tasks/img/latex/sqrt.png' %}" alt="Корень"></button>
+                        <button type="button" onclick="insertLatex('x^{n}', 'answer')" title="Степень"><img src="{% static 'tasks/img/latex/power.png' %}" alt="Степень"></button>
+                        <button type="button" onclick="insertLatex('x_{i}', 'answer')" title="Индекс"><img src="{% static 'tasks/img/latex/index.png' %}" alt="Индекс"></button>
+                    </div>
+                </div>
+                <div class="editor-panel">
+                    <textarea id="answer-input" class="raw-editor" oninput="updatePreview('answer')">{{ task.answer }}</textarea>
+                    <div class="live-preview" id="answer-preview"></div>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button class="cancel-button" onclick="toggleEdit('answer')">Отмена</button>
+                <button class="save-button" onclick="saveEdit('answer', {{ task.id }})">Сохранить</button>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h3>Решение:</h3>
+            <button class="edit-button" onclick="toggleEdit('solution')">Редактировать</button>
+        </div>
+        
+        <div class="solution-steps" id="solution-display">
+            <div class="step">
+                {{ task.solution|mathjax_safe }}
+            </div>
+        </div>
+        
+        <div id="solution-edit" class="edit-form">
+            <div class="latex-editor-container">
+                <div class="latex-toolbar">
+                    <div class="toolbar-group">
+                        <button type="button" onclick="insertLatex('\\frac{a}{b}', 'solution')" title="Дробь"><img src="{% static 'tasks/img/latex/frac.png' %}" alt="Дробь"></button>
+                        <button type="button" onclick="insertLatex('\\sqrt{x}', 'solution')" title="Корень"><img src="{% static 'tasks/img/latex/sqrt.png' %}" alt="Корень"></button>
+                        <button type="button" onclick="insertLatex('x^{n}', 'solution')" title="Степень"><img src="{% static 'tasks/img/latex/power.png' %}" alt="Степень"></button>
+                        <button type="button" onclick="insertLatex('x_{i}', 'solution')" title="Индекс"><img src="{% static 'tasks/img/latex/index.png' %}" alt="Индекс"></button>
+                    </div>
+                </div>
+                <div class="editor-panel">
+                    <textarea id="solution-input" class="raw-editor" oninput="updatePreview('solution')">{{ task.solution }}</textarea>
+                    <div class="live-preview" id="solution-preview"></div>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button class="cancel-button" onclick="toggleEdit('solution')">Отмена</button>
+                <button class="save-button" onclick="saveEdit('solution', {{ task.id }})">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    
+    <a href="{% url 'task_list_url' %}" class="back-link">← Вернуться к списку задач</a>
+</div>
+
+<script>
+    // Функция для переключения между отображением и редактированием
+    function toggleEdit(field) {
+        const displayElement = document.getElementById(`${field}-display`);
+        const editElement = document.getElementById(`${field}-edit`);
+        
+        if (editElement.style.display === 'block') {
+            editElement.style.display = 'none';
+            displayElement.style.display = 'block';
+        } else {
+            editElement.style.display = 'block';
+            if (field !== 'difficulty') { // difficulty отображается внутри другого элемента
+                displayElement.style.display = 'none';
+            }
+            
+            // Если открыли редактор с формулами, инициализируем предпросмотр
+            if (field === 'description' || field === 'answer' || field === 'solution') {
+                updatePreview(field);
+            }
+        }
+    }
+    
+    // Функция для вставки LaTeX в редактор
+    function insertLatex(latex, field) {
+        const textarea = document.getElementById(`${field}-input`);
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        
+        // Добавляем доллары вокруг формулы, если это нужно
+        const insertion = (latex.startsWith('\\begin') || latex.startsWith('\\[')) 
+            ? latex 
+            : `$${latex}$`;
+        
+        const text = textarea.value;
+        textarea.value = text.substring(0, start) + insertion + text.substring(end);
+        
+        // Устанавливаем курсор после вставленной формулы
+        textarea.selectionStart = textarea.selectionEnd = start + insertion.length;
+        
+        // Обновляем предпросмотр
+        updatePreview(field);
+        
+        // Возвращаем фокус в редактор
+        textarea.focus();
+    }
+    
+    // Функция для обновления предпросмотра
+    function updatePreview(field) {
+        const input = document.getElementById(`${field}-input`).value;
+        const preview = document.getElementById(`${field}-preview`);
+        
+        // Устанавливаем HTML-контент
+        preview.innerHTML = input;
+        
+        // Если есть MathJax, рендерим формулы
+        if (window.MathJax) {
+            MathJax.typesetPromise([preview]).then(() => {
+                console.log(`MathJax rendering complete for ${field}`);
+            }).catch(err => {
+                console.error(`MathJax error for ${field}:`, err);
+            });
+        }
+    }
+    
+    // Функция для сохранения изменений
+    function saveEdit(field, taskId) {
+        const inputElement = document.getElementById(`${field}-input`);
+        const value = inputElement.value;
+        
+        // Создаем данные для отправки
+        const data = new FormData();
+        data.append('field', field);
+        data.append('value', value);
+        data.append('task_id', taskId);
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        // Отправляем AJAX запрос
+        fetch('/task/edit/', {
+            method: 'POST',
+            body: data,
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем отображаемый текст
+                const displayElement = document.getElementById(`${field}-display`);
+                
+                if (field === 'difficulty') {
+                    displayElement.textContent = value;
+                } else {
+                    // Для полей с формулами нужно перерендерить MathJax
+                    displayElement.innerHTML = data.html;
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([displayElement]).then(() => {
+                            console.log(`MathJax reprocessed for ${field}`);
+                        });
+                    }
+                }
+                
+                // Показываем сообщение об успехе
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.textContent = 'Изменения успешно сохранены';
+                flashMessage.style.display = 'block';
+                
+                // Скрываем сообщение через 3 секунды
+                setTimeout(() => {
+                    flashMessage.style.display = 'none';
+                }, 3000);
+                
+                // Скрываем форму редактирования
+                toggleEdit(field);
+            } else {
+                alert('Ошибка при сохранении изменений: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при сохранении изменений');
+        });
+    }
+    
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверяем, открыты ли формы редактирования с формулами, и инициализируем предпросмотр
+        const fields = ['description', 'answer', 'solution'];
+        fields.forEach(field => {
+            const editForm = document.getElementById(`${field}-edit`);
+            if (editForm && editForm.style.display === 'block') {
+                updatePreview(field);
+            }
+        });
+    });
+</script>
+{% endblock %}
