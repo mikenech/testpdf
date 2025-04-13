@@ -149,11 +149,7 @@
     </style>
 </head>
 <body>
-    <!-- Заголовок страницы -->
-    <div class="header">
-        <div class="variant-title">{{category.name}} - Вариант {{variant.variant_id}} Дата: {{variant.created_at|date:'d.m.Y'}}</div>
-    </div>
-    
+
     <!-- Задания в две колонки -->
     <div class="tasks-container">
         {% for task in tasks %}

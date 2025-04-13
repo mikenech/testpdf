@@ -498,7 +498,7 @@ def Variant_PDF(reqiest,pk):
     print(f">>> Запрос PDF для варианта с ID {pk}")
     try:
         variant = Variant.objects.get(pk=int(pk))
-    category = variant.category
+        category = variant.category
         tasks = list(variant.tasks.all())  # Преобразуем QuerySet в list
         
         # Создаем контекст для шаблона
@@ -533,20 +533,20 @@ def Variant_new(reqiest):
             variant = existing_variant
         else:
             # Создаем новый вариант
-    variant = Variant()
+            variant = Variant()
             variant.category = Category.objects.get(pk=category_id)
             variant.variant_id = variant_id
             variant.name = name
-    _tasks_num = int(reqiest.POST['tasks_num'])
-    variant.created_at = datetime.now()
+            _tasks_num = int(reqiest.POST['tasks_num'])
+            variant.created_at = datetime.now()
             
             print(f">>> Сохранение варианта: {variant.name}, категория: {variant.category.name}, задания: {_tasks_num}")
-    variant.save()
+            variant.save()
             
             print(">>> Выборка заданий...")
-    _l = list(variant.category.tasks.all())
-    _l = random.sample(_l,min(_tasks_num,len(_l)))
-    variant.tasks.set(_l)
+            _l = list(variant.category.tasks.all())
+            _l = random.sample(_l,min(_tasks_num,len(_l)))
+            variant.tasks.set(_l)
             print(f">>> Добавлено {len(_l)} заданий")
 
         # Создаем контекст для шаблона
@@ -613,19 +613,3 @@ def task_edit(request):
     # Если запрос не POST
     return JsonResponse({'success': False, 'error': 'Метод не поддерживается'})
 
-# Удаляем функции для тестирования формул, так как они больше не нужны
-# def latex_examples(request):
-#     """View to demonstrate LaTeX math formula examples"""
-#     return render(request, 'tasks/latex_examples.html')
-# 
-# def latex_process(request):
-#     """View to process and render LaTeX formulas"""
-#     return render(request, 'tasks/latex_process.html')
-# 
-# def latex_cheatsheet(request):
-#     """View for LaTeX cheatsheet with common formulas"""
-#     return render(request, 'tasks/latex_cheatsheet.html')
-# 
-# def math_test(request):
-#     """Тестовая страница для отображения математических формул"""
-#     return render(request, 'tasks/math_test.html')
