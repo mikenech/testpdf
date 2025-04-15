@@ -71,36 +71,50 @@
         .task {
             break-inside: avoid;
             page-break-inside: avoid;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 1px;
+            border-radius: 10px;
             background-color: #f9f9f9;
         }
         
         .task-number {
             font-weight: bold;
             display: inline-block;
-            width: 25px;
-            height: 25px;
+            width: 23px;
+            height: 23px;
             text-align: center;
-            line-height: 25px;
-            border: 1px solid #000;
+            line-height: 23px;
+            border: 2px inset #ddd;
             margin-right: 10px;
-            border-radius: 50%;
-            background-color: #fff;
+            border-radius: 8px;
+            background-color: #ccc;
         }
         
         .task-title {
             font-weight: bold;
             margin-bottom: 8px;
-            display: inline-block;
+        /*    display: inline-block; */
+            background-color: #ccc;
+            border-bottom: 1px solid #000;
+            border-radius: 8px;
         }
         
         .task-content {
-            margin-top: 10px;
+            margin-top: 0px;
         }
-        
+        .task-description {
+            margin: 0px;
+            padding: 5px;
+
+}
+        .task-info {
+            font-style: italic;
+            font-size: 9pt;
+            text-align: right;
+            color: #555;
+            padding-right: 5px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -123,7 +137,6 @@
         }
         
         .answer-line {
-            margin-top: 10px;
             border-top: 1px dashed #ccc;
             padding-top: 10px;
         }
@@ -178,7 +191,10 @@
                     {% endfor %}
                 </table>
                 {% endif %}
-                
+                <div class="task-info">
+                    Сложность:{{task.difficulty_level}}
+                    Макс.баллов:{{task.max_score}}
+                </div>
                 <div class="answer-line">
                     <span class="answer-label">Ответ:</span>
                     {% if task.answers.all|length > 0 %}
@@ -198,10 +214,7 @@
                     <span class="answer-field"></span>
                     {% endif %}
                 </div>
-                <div class="task-info">
-                    Сложность:{{task.difficulty_level}}
-                    Макс.баллов:{{task.max_score}}
-                </div>
+
             </div>
         </div>
         {% endfor %}

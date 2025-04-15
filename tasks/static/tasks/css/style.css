@@ -30,15 +30,15 @@ body {
     box-sizing: border-box;
     break-inside: avoid;
     page-break-inside: avoid;
-    border-radius: 5px;
+    border-radius: 10px;
 }
-.task-title h5 {
+.task-title {
             font-weight: bold;
-            font-style: italic;
             margin-bottom: 8px;
             background: #ddd;
-            border-bottom: 1px solid #000;
-            padding-bottom: 3px;
+            border: 2px outset #ddd;
+            border-radius: 8px;
+            padding: 1px 5px;
         }
 .task-description {
             margin: 0px;
