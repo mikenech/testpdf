@@ -611,19 +611,3 @@ def task_edit(request):
     # Если запрос не POST
     return JsonResponse({'success': False, 'error': 'Метод не поддерживается'})
 
-# Удаляем функции для тестирования формул, так как они больше не нужны
-# def latex_examples(request):
-#     """View to demonstrate LaTeX math formula examples"""
-#     return render(request, 'tasks/latex_examples.html')
-# 
-# def latex_process(request):
-#     """View to process and render LaTeX formulas"""
-#     return render(request, 'tasks/latex_process.html')
-# 
-# def latex_cheatsheet(request):
-#     """View for LaTeX cheatsheet with common formulas"""
-#     return render(request, 'tasks/latex_cheatsheet.html')
-# 
-# def math_test(request):
-#     """Тестовая страница для отображения математических формул"""
-#     return render(request, 'tasks/math_test.html')
