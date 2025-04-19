@@ -15,7 +15,7 @@
         /* Стили для основного документа */
         @page {
             size: A4 landscape;
-            margin: 2cm 1cm 2cm 1cm;
+            margin: 1cm 1cm 1cm 1cm;
             @top-left {
                 content: "{{category.name}}";
             }
@@ -73,8 +73,8 @@
             page-break-inside: avoid;
             margin-bottom: 20px;
             border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 0px;
+            border-radius: 10px;
             background-color: #f9f9f9;
         }
         
@@ -87,22 +87,31 @@
             line-height: 25px;
             border: 1px solid #000;
             margin-right: 10px;
-            border-radius: 50%;
+            border-radius: 10px;
             background-color: #fff;
         }
         
+        
         .task-title {
             font-weight: bold;
+            font-style: italic;
             margin-bottom: 8px;
-            display: inline-block;
+            background: #ddd;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
         }
         
         .task-content {
-            margin-top: 10px;
+            margin-top: 0px;
         }
-        
+        .task-info {
+            font-style: italic;
+            font-size: 9pt;
+            text-align: right;
+            color: #555;
+        }
         table {
-            width: 100%;
+            width: 95%;
             border-collapse: collapse;
             margin: 10px 0;
         }
@@ -160,7 +169,8 @@
                 </div>
 
                 <div class="task-description">
-                        {{ task.description|mathjax_safe }}
+                    {{ task.description|mathjax_safe }}
+                    
                 </div>
                 
                 {% if task.answers.all|length > 0 %}
@@ -178,7 +188,10 @@
                     {% endfor %}
                 </table>
                 {% endif %}
-                
+                <div class="task-info">
+                        Сложность:{{task.difficulty_level}}
+                        Макс.баллов:{{task.max_score}}
+                </div>
                 <div class="answer-line">
                     <span class="answer-label">Ответ:</span>
                     {% if task.answers.all|length > 0 %}
@@ -198,10 +211,7 @@
                     <span class="answer-field"></span>
                     {% endif %}
                 </div>
-                <div class="task-info">
-                    Сложность:{{task.difficulty_level}}
-                    Макс.баллов:{{task.max_score}}
-                </div>
+                
             </div>
         </div>
         {% endfor %}
